@@ -1,9 +1,9 @@
 import { encodeRawValue } from './raw-values/encode-raw-value'
 import { RowParser } from './row-parser/row-parser'
 import { readStream } from './stream-reader/stream-reader'
-import { ParserSettings, SheetCell, SheetDefinition } from './types'
+import { ParserSettings, RecordValues, SheetCell, SheetDefinition } from './types'
 
-export class Sheet<T extends any[]> {
+export class Sheet<T extends RecordValues> {
     private readonly settings: ParserSettings
     private readonly headers?: string[]
     private readonly parser: RowParser<T>
@@ -17,7 +17,7 @@ export class Sheet<T extends any[]> {
             ...sheetDefinition.settings
         }
 
-        this.parser = new RowParser<T>(this.settings, sheetDefinition.records)
+        this.parser = new RowParser<T>(this.settings, sheetDefinition.cells)
         this.headers = sheetDefinition.headers
     }
 

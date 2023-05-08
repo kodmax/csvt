@@ -3,15 +3,15 @@ import { Readable } from 'stream'
 
 describe('csvt', () => {
     describe('headers', () => {
-        const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
+        const sheet = new Sheet<{ date: string; title: string; recipient: string; amount: number }>({
             settings: { allowNewLines: true, hasHeaders: true },
             headers: ['ad', 'td', 'tt', 'ad', 'an', 'am', 'ba', 'id'],
-            records: [
-                { index: 1, read: v => v },
-                { index: 2, read: v => v },
-                { index: 3, read: v => v },
-                { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
-            ]
+            cells: {
+                date: { index: 1 },
+                title: { index: 2 },
+                recipient: { index: 3 },
+                amount: { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
+            }
         })
 
         it('validate headers', () => {
@@ -21,30 +21,35 @@ describe('csvt', () => {
             ])
 
             expect(records).toEqual([
-                ['05-05-2023', 'Zakup BLIK PayPro SA Pastelowa 860-198 Poznan ref:1234', 'PayPro SA Pastelowa 860-198 Poznan', -33242]
+                {
+                    date: '05-05-2023',
+                    title: 'Zakup BLIK PayPro SA Pastelowa 860-198 Poznan ref:1234',
+                    recipient: 'PayPro SA Pastelowa 860-198 Poznan',
+                    amount: -33242
+                }
             ])
         })
     })
 
     describe('write', () => {
-        const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
+        const sheet = new Sheet<{ date: string; title: string; recipient: string; amount: number }>({
             settings: { allowNewLines: false },
             headers: ['Date', 'Title', 'Recipient', 'Amount'],
-            records: [
-                { index: 0, read: v => v },
-                { index: 1, read: v => v },
-                { index: 2, read: v => v },
-                { index: 3, write: v => (v / 100).toFixed(2).replace('.', ',') }
-            ]
+            cells: {
+                date: { index: 0 },
+                title: { index: 1 },
+                recipient: { index: 2 },
+                amount: { index: 3, write: v => (v / 100).toFixed(2).replace('.', ',') }
+            }
         })
 
         it('write row', () => {
-            const row = sheet.writeRow([
-                '05-05-2023',
-                'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
-                'PayPro SA Pastelowa 8 60-198 Poznan',
-                -33242
-            ])
+            const row = sheet.writeRow({
+                date: '05-05-2023',
+                title: 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
+                recipient: 'PayPro SA Pastelowa 8 60-198 Poznan',
+                amount: -33242
+            })
 
             expect(row).toEqual(
                 '05-05-2023,Zakup BLIK PayPro SA Pastelowa 8 60-198 Poznan ref: 1234,PayPro SA Pastelowa 8 60-198 Poznan,"-332,42"'
@@ -52,27 +57,28 @@ describe('csvt', () => {
         })
 
         it('write headers', () => {
-            const row = sheet.writeRow([
-                '05-05-2023',
-                'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
-                'PayPro SA Pastelowa 8 60-198 Poznan',
-                -33242
-            ])
+            const row = sheet.writeRow({
+                date: '05-05-2023',
+                title: 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
+                recipient: 'PayPro SA Pastelowa 8 60-198 Poznan',
+                amount: -33242
+            })
 
             expect(sheet.writeHeaders()).toEqual(
                 'Date,Title,Recipient,Amount'
             )
         })
     })
+
     describe('sheet', () => {
-        const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
+        const sheet = new Sheet<{ date: string; title: string; recipient: string; amount: number }>({
             settings: { allowNewLines: true },
-            records: [
-                { index: 1, read: v => v },
-                { index: 2, read: v => v },
-                { index: 3, read: v => v },
-                { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
-            ]
+            cells: {
+                date: { index: 1 },
+                title: { index: 2 },
+                recipient: { index: 3 },
+                amount: { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
+            }
         })
 
         it('read from string', () => {
@@ -81,7 +87,12 @@ describe('csvt', () => {
             ])
 
             expect(records).toEqual([
-                ['05-05-2023', 'Zakup BLIK PayPro SA Pastelowa 860-198 Poznan ref:1234', 'PayPro SA Pastelowa 860-198 Poznan', -33242]
+                {
+                    date: '05-05-2023',
+                    title: 'Zakup BLIK PayPro SA Pastelowa 860-198 Poznan ref:1234',
+                    recipient: 'PayPro SA Pastelowa 860-198 Poznan',
+                    amount: -33242
+                }
             ])
         })
 
@@ -107,9 +118,24 @@ describe('csvt', () => {
             }
 
             expect(records).toEqual([
-                ['05-05-2023', 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan ref: 1234', 'PayPro SA Pastelowa 8\t60-198 Poznan', -33242],
-                ['05-05-2023', 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan ref: 1234', 'PayPro SA Pastelowa 8\t60-198 Poznan', -133242],
-                ['05-05-2023', 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan ref: 1234', 'PayPro SA Pastelowa 8\t60-198 Poznan', -233242]
+                {
+                    date: '05-05-2023',
+                    title: 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan ref: 1234',
+                    recipient: 'PayPro SA Pastelowa 8\t60-198 Poznan',
+                    amount: -33242
+                },
+                {
+                    date: '05-05-2023',
+                    title: 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan ref: 1234',
+                    recipient: 'PayPro SA Pastelowa 8\t60-198 Poznan',
+                    amount: -133242
+                },
+                {
+                    date: '05-05-2023',
+                    title: 'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan ref: 1234',
+                    recipient: 'PayPro SA Pastelowa 8\t60-198 Poznan',
+                    amount: -233242
+                }
             ])
         })
     })

@@ -10,12 +10,15 @@ export type SheetHeaders<T extends any[]> = {
 export type SheetCell<T> = {
     write?: (v: T) => string
     read?: (v: string) => T
+    header?: string
     index: number
 }
 
-export type SheetRecord<T extends any[]> = {
-    [I in keyof T]: SheetCell<T[I]>
+export type RecordValues = Record<string, any>
+export type RecordDefinition<R extends RecordValues> = {
+    [N in keyof R]: SheetCell<R[N]>
 }
+
 
 export type ParserSettings = {
     hasHeaders: boolean
@@ -23,9 +26,9 @@ export type ParserSettings = {
     delimiter: string
 }
 
-export type SheetDefinition<T extends any[]> = {
+export type SheetDefinition<T extends RecordValues> = {
     settings?: Partial<ParserSettings>
-    records: SheetRecord<T>
+    cells: RecordDefinition<T>
     headers?: string[]
 }
 
