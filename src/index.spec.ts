@@ -26,6 +26,30 @@ describe('csvt', () => {
         })
     })
 
+    describe('write', () => {
+        const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
+            settings: { allowNewLines: false },
+            records: [
+                { index: 1, read: v => v },
+                { index: 2, read: v => v },
+                { index: 3, read: v => v },
+                { index: 5, write: v => (v / 100).toFixed(2).replace('.', ',') }
+            ]
+        })
+
+        it('write row', () => {
+            const row = sheet.writeRow([
+                '05-05-2023',
+                'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
+                'PayPro SA Pastelowa 8 60-198 Poznan',
+                -33242
+            ])
+
+            expect(row).toEqual(
+                ',05-05-2023,Zakup BLIK PayPro SA Pastelowa 8 60-198 Poznan ref: 1234,PayPro SA Pastelowa 8 60-198 Poznan,,"-332,42"'
+            )
+        })
+    })
     describe('sheet', () => {
         const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
             settings: { allowNewLines: true },

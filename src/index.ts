@@ -50,6 +50,13 @@ export class Sheet<T extends any[]> {
         return rows.map(row => this.parser.parse(row))
     }
 
+    public writeRow(record: T): string {
+        return this.parser
+            .writeCells(new Array(this.headers?.length), record)
+            .map(value => value ?? '')
+            .join(this.settings.delimiter)
+    }
+
     public async *parseStream(input: NodeJS.ReadableStream): AsyncGenerator<T, void, void> {
         const rows = readStream(input, this.settings)
 

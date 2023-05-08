@@ -24,18 +24,23 @@ describe('row parser', () => {
             { index: 1 },
             { index: 2 },
             { index: 3 },
-            { index: 5, write: v => (v/100).toFixed(2).replace('.', ',') }
+            { index: 5, write: v => (v / 100).toFixed(2).replace('.', ',') }
         ])
 
-        const row = parser.write([
+        const row = parser.writeCells([], [
             '05-05-2023',
             'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
             'PayPro SA Pastelowa 8 60-198 Poznan',
             -33242
         ])
 
-        expect(row).toBe(
-            ',05-05-2023,Zakup BLIK PayPro SA Pastelowa 8 60-198 Poznan ref: 1234,PayPro SA Pastelowa 8 60-198 Poznan,,"-332,42"'
-        )
+        expect(row).toEqual([
+            ,
+            '05-05-2023',
+            'Zakup BLIK PayPro SA Pastelowa 8 60-198 Poznan ref: 1234',
+            'PayPro SA Pastelowa 8 60-198 Poznan',
+            ,
+            '"-332,42"'
+        ])
     })
 })

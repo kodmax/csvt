@@ -20,15 +20,14 @@ export class RowParser<T extends any[]>{
         }) as T
     }
 
-    public write(values: T): string {
-        const rawValues: string[] = []
+    public writeCells(values: string[], record: T): string[] {
         this.definition.forEach((cell, i) => {
-            rawValues[cell.index] = encodeRawValue(this.settings, cell.write
-                ? cell.write(values[i])
-                : values[i]
+            values[cell.index] = encodeRawValue(this.settings, cell.write
+                ? cell.write(record[i])
+                : String(record[i])
             )
         })
 
-        return rawValues.join(this.settings.delimiter)
+        return values
     }
 }
