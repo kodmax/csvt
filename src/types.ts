@@ -29,6 +29,8 @@ export type ParserSettings = {
 export type SheetDefinition<T extends RecordValues> = {
     settings?: Partial<ParserSettings>
     cells: RecordDefinition<T>
-    headers?: string[]
 }
 
+export type HeadersDefinition<T extends RecordValues> = {
+    [N in keyof T]: string
+}

@@ -5,12 +5,11 @@ describe('csvt', () => {
     describe('headers', () => {
         const sheet = new Sheet<{ date: string; title: string; recipient: string; amount: number }>({
             settings: { allowNewLines: true, hasHeaders: true },
-            headers: ['ad', 'td', 'tt', 'ad', 'an', 'am', 'ba', 'id'],
             cells: {
-                date: { index: 1 },
-                title: { index: 2 },
-                recipient: { index: 3 },
-                amount: { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
+                date: { index: 1, header: 'td' },
+                title: { index: 2, header: 'tt' },
+                recipient: { index: 3, header: 'ad' },
+                amount: { index: 5, read: v => Math.round(+v.replace(',', '.') * 100), header: 'am' }
             }
         })
 
@@ -34,12 +33,11 @@ describe('csvt', () => {
     describe('write', () => {
         const sheet = new Sheet<{ date: string; title: string; recipient: string; amount: number }>({
             settings: { allowNewLines: false },
-            headers: ['Date', 'Title', 'Recipient', 'Amount'],
             cells: {
-                date: { index: 0 },
-                title: { index: 1 },
-                recipient: { index: 2 },
-                amount: { index: 3, write: v => (v / 100).toFixed(2).replace('.', ',') }
+                date: { index: 0, header: 'Date' },
+                title: { index: 1, header: 'Title' },
+                recipient: { index: 2, header: 'Recipient' },
+                amount: { index: 3, write: v => (v / 100).toFixed(2).replace('.', ','), header: 'Amount' }
             }
         })
 
