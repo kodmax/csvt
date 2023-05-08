@@ -6,7 +6,8 @@
   "scripts": {
     "pretty": "eslint . --fix",
     "lint": "eslint .",
-    "test": "jest src"
+    "test": "jest src",
+    "build": "rm -rf dist && tsc"
   },
   "author": "",
   "license": "ISC",
