@@ -1,5 +1,5 @@
 {
-  "name": "csvt",
+  "name": "type-csv",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -9,9 +9,21 @@
     "test": "jest src",
     "build": "rm -rf dist && tsc"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kodmax/csvt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kodmax/csvt/issues"
+  },
+  "homepage": "https://github.com/kodmax/csvt#readme",
+  "keywords": [
+    "csv", "typescript"
+  ],
+  "author": "Marcin Malinowski <mm.kodmax@gmail.com>",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
     "@types/jest": "^29.5.1",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
