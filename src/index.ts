@@ -12,7 +12,7 @@ export class Sheet<T extends any[]> {
             allowNewLines: false,
             delimiter: ',',
             hasHeaders: false,
-            
+
             ...sheetDefinition.settings
         }
 
@@ -24,9 +24,9 @@ export class Sheet<T extends any[]> {
         if (headers) {
             if (this.headers) {
                 const definition: SheetCell<string>[] = this.headers.map((name, i) => ({
-                    index: i, cb: v => v
+                    index: i, read: v => v
                 }))
-    
+
                 const parser = new RowParser<string[]>(this.settings, definition)
                 const record = parser.parse(headers)
                 for (let i = 0; i < this.headers.length; i++) {
@@ -35,7 +35,7 @@ export class Sheet<T extends any[]> {
                     }
                 }
             }
-    
+
         } else {
             throw new Error('Missing headers')
         }
@@ -52,7 +52,7 @@ export class Sheet<T extends any[]> {
 
     public async *parseStream(input: NodeJS.ReadableStream): AsyncGenerator<T, void, void> {
         const rows = readStream(input, this.settings)
-        
+
         if (this.settings.hasHeaders) {
             const firstRow = await rows.next()
             const headers = firstRow.value

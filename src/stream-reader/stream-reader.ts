@@ -1,6 +1,6 @@
-import { ParserSettings } from "../types"
+import { ParserSettings } from '../types'
 
-type Settings = Omit<ParserSettings, 'hasHeaders' | 'delimiter' | 'trim'>
+type Settings = Omit<ParserSettings, 'hasHeaders' | 'delimiter'>
 
 export async function* readStream(input: NodeJS.ReadableStream, { allowNewLines }: Settings): AsyncGenerator<string, void, void> {
     const content: string[] = []
@@ -30,9 +30,9 @@ export async function* readStream(input: NodeJS.ReadableStream, { allowNewLines 
                 case '\n': case '\r':
                     if (!inQuotes || !allowNewLines) {
                         content.push(chunk.substring(0, i))
-                        const line = content.splice(0, content.length).join('')
-                        if (line.trim().length > 0) {
-                            yield line.trim()
+                        const line = content.splice(0, content.length).join('').trim()
+                        if (line.length > 0) {
+                            yield line
                         }
 
                         chunk = chunk.substring(i + 1)

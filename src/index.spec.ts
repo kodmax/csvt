@@ -1,6 +1,5 @@
 import { Sheet } from '.'
 import { Readable } from 'stream'
-import { createReadStream } from 'fs'
 
 describe('csvt', () => {
     describe('headers', () => {
@@ -8,10 +7,10 @@ describe('csvt', () => {
             settings: { allowNewLines: true, hasHeaders: true },
             headers: ['ad', 'td', 'tt', 'ad', 'an', 'am', 'ba', 'id'],
             records: [
-                { index: 1, cb: v => v },
-                { index: 2, cb: v => v },
-                { index: 3, cb: v => v },
-                { index: 5, cb: v => Math.round(+v.replace(',', '.') * 100) }
+                { index: 1, read: v => v },
+                { index: 2, read: v => v },
+                { index: 3, read: v => v },
+                { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
             ]
         })
 
@@ -31,10 +30,10 @@ describe('csvt', () => {
         const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
             settings: { allowNewLines: true },
             records: [
-                { index: 1, cb: v => v },
-                { index: 2, cb: v => v },
-                { index: 3, cb: v => v },
-                { index: 5, cb: v => Math.round(+v.replace(',', '.') * 100) }
+                { index: 1, read: v => v },
+                { index: 2, read: v => v },
+                { index: 3, read: v => v },
+                { index: 5, read: v => Math.round(+v.replace(',', '.') * 100) }
             ]
         })
 

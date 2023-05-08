@@ -8,7 +8,8 @@ export type SheetHeaders<T extends any[]> = {
 }
 
 export type SheetCell<T> = {
-    cb: (v: string) => T
+    write?: (v: T) => string
+    read?: (v: string) => T
     index: number
 }
 
