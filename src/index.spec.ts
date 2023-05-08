@@ -29,11 +29,12 @@ describe('csvt', () => {
     describe('write', () => {
         const sheet = new Sheet<[date: string, title: string, address: string, ammount: number]>({
             settings: { allowNewLines: false },
+            headers: ['Date', 'Title', 'Recipient', 'Amount'],
             records: [
+                { index: 0, read: v => v },
                 { index: 1, read: v => v },
                 { index: 2, read: v => v },
-                { index: 3, read: v => v },
-                { index: 5, write: v => (v / 100).toFixed(2).replace('.', ',') }
+                { index: 3, write: v => (v / 100).toFixed(2).replace('.', ',') }
             ]
         })
 
@@ -46,7 +47,20 @@ describe('csvt', () => {
             ])
 
             expect(row).toEqual(
-                ',05-05-2023,Zakup BLIK PayPro SA Pastelowa 8 60-198 Poznan ref: 1234,PayPro SA Pastelowa 8 60-198 Poznan,,"-332,42"'
+                '05-05-2023,Zakup BLIK PayPro SA Pastelowa 8 60-198 Poznan ref: 1234,PayPro SA Pastelowa 8 60-198 Poznan,"-332,42"'
+            )
+        })
+
+        it('write headers', () => {
+            const row = sheet.writeRow([
+                '05-05-2023',
+                'Zakup BLIK PayPro SA Pastelowa 8\n60-198 Poznan\nref: 1234',
+                'PayPro SA Pastelowa 8 60-198 Poznan',
+                -33242
+            ])
+
+            expect(sheet.writeHeaders()).toEqual(
+                'Date,Title,Recipient,Amount'
             )
         })
     })

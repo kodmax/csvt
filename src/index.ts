@@ -1,3 +1,4 @@
+import { encodeRawValue } from './raw-values/encode-raw-value'
 import { RowParser } from './row-parser/row-parser'
 import { readStream } from './stream-reader/stream-reader'
 import { ParserSettings, SheetCell, SheetDefinition } from './types'
@@ -55,6 +56,15 @@ export class Sheet<T extends any[]> {
             .writeCells(new Array(this.headers?.length), record)
             .map(value => value ?? '')
             .join(this.settings.delimiter)
+    }
+
+    public writeHeaders(): string {
+        if (this.headers) {
+            return this.headers.map(name => encodeRawValue(this.settings, name)).join(this.settings.delimiter)
+
+        } else {
+            throw new Error('Headers not defined')
+        }
     }
 
     public async *parseStream(input: NodeJS.ReadableStream): AsyncGenerator<T, void, void> {
